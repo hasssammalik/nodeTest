@@ -1,0 +1,11 @@
+{
+  "name": "nodeTest",
+  "version": "1.0.0",
+  "dependencies":
+  {
+    "express": "~4.0.0",
+    "pg": "~6.1.0",
+    "redis": "~2.6.2",
+    "ejs": "~1.0.0"
+  }
+}

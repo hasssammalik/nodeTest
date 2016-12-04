@@ -1,3 +1,6 @@
+const pg = require('pg');
+var redis = require('redis');
+
 module.exports = function(app)
 {
     app.get('/',function(req,res){
@@ -18,14 +21,40 @@ module.exports = function(app)
 	   res.end(JSON.stringify(response));
 	});
 
-   	app.get('/db', function (req, res, next) {  
-	  const pg = require('pg'); 
-	  const conString = 'postgres://sevenapi:sevenapi@pgsql.internal';
-	  pg.connect(conString, function (err, client, done) {
-	    if (err) {
-	      res.render('error.html');
-	    }
-	 	  res.render('connected.html');
-	    })
-	  });
+   	//Check Databse
+   	app.get('/db', function (req, res, next) { 
+   		require("../model/database.js")(pg);
+
+   		pg.on('error', function(e, client) {
+   			 res.render('error.html');
+		});
+
+		setTimeout(function(){
+			res.render('connected.html');
+		 }, 5000);
+	});
+
+   	//CheckRedis
+   	app.get('/redis', function (req, res, next) { 
+   		require("../model/redis.js");
+
+   		var port = '6379';
+		var host = 'redis.internal';
+   		var client = redis.createClient(port, host);
+
+
+   		client.on('connect', function() {
+		    res.render('connected.html');
+		});
+
+		client.on('error', function() {
+		    res.render('error.html');
+		});
+   		
+
+	});
+
+
+
+   	
 }
